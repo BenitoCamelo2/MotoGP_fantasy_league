@@ -172,6 +172,7 @@ bool MemberMenu::addMember() {
         
         initscr();
         cbreak();
+        clear();
         noecho();
         keypad(stdscr, TRUE);
         start_color();
