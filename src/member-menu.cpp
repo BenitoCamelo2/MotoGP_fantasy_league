@@ -169,25 +169,41 @@ bool MemberMenu::addMember() {
 
         left = 10; //position of left arrows, 10 because of tab
         right = longestStringLength + 19;
+        
+        initscr();
+        cbreak();
+        noecho();
+        keypad(stdscr, TRUE);
+        start_color();
+        
+        curs_set(0);
+        init_pair(1, COLOR_GREEN, COLOR_BLACK);
+        init_pair(2, COLOR_WHITE, COLOR_BLACK);
 
-        cout << "Add riders to member's picks" << endl;
-        cout << "Navigate with arrow keys" << endl;
-        cout << "Enter: add to list" << endl;
-        cout << "Backspace: remove from list" << endl;
+        printw("Add riders to member's picks\n");
+        printw("Navigate with arrow keys\n");
+        printw("Enter: add to list\n");
+        printw("Backspace: remove from list\n");
+        printw("C to cancel\n");
 
         printMenu(riderStringArray, riderCount);
-        cout << "\t\x1B[32mAccept" << endl; // green
-        cout << "\x1b[37m"; // white
+        attron(COLOR_PAIR(1));
+        printw("\tAccept\n");
+        attroff(COLOR_PAIR(1));
+        attron(COLOR_PAIR(2));
 
         int messageLine = 8+riderCount, messageStart = 10, acceptLine = riderCount+1;
+        
         while(!exit){
             lineOption = option+5;
 
             updateMenu(lineOption, left, right);
-            key = _getch();
+            refresh();
+            key = getch();
+            //printw("%d", key); use if need to find keycode
 
             switch(key){
-                case 80: {
+                case KEY_DOWN: {
                     if(option == riderCount+1){
                         option = 1;
                     } else {
@@ -196,7 +212,7 @@ bool MemberMenu::addMember() {
                     break;
                 }
 
-                case 72:{
+                case KEY_UP:{
                     if(option == 1){
                         option = riderCount+1;
                     } else {
@@ -205,28 +221,28 @@ bool MemberMenu::addMember() {
                     break;
                 }
 
-                case 13: {
+                case 10: {
                     gotoxy(messageStart, messageLine);
-                    cout << "                                                     ";
+                    printw("                                                     ");
 
                     if(option == acceptLine){
                         if(amountSelected >= RIDER_COUNT){
                             exit = true;
                         } else {
                             gotoxy(messageStart, messageLine);
-                            cout << "You must only select 6 riders" << endl;
+                            printw("You must only select 6 riders");
                         }
                         break;
                     }
 
                     if(amountSelected == 4){
                         gotoxy(messageStart, messageLine);
-                        cout << "The next rider will be the independent rider";
+                        printw("The next rider will be the independent rider");
                     }
 
                     if(amountSelected >= RIDER_COUNT){
                         gotoxy(messageStart, messageLine);
-                        cout << "You have selected the max amount of riders";
+                        printw("You have selected the max amount of riders");
                         break;
                     }
                     if(option != acceptLine && checkIfSelected(selections, RIDER_COUNT, option-1) == -1){
@@ -240,11 +256,11 @@ bool MemberMenu::addMember() {
                             i = 5;
                         }
                         selections[i] = option-1;
-                        gotoxy(right + 5, option + 5);
+                        gotoxy(right + 5, lineOption);
                         if(i == 5){
-                            cout << "i";
+                            printw("i");
                         } else {
-                            cout << i+1;
+                            printw("%d", i+1);
                         }
                         amountSelected++;
                         break;
@@ -253,25 +269,34 @@ bool MemberMenu::addMember() {
                     break;
                 }
 
-                case 8: {
+                case 127: {
                     int selected;
 
                     gotoxy(messageStart, messageLine);
-                    cout << "                                                     ";
+                    printw("                                                     ");
 
                     selected = checkIfSelected(selections, RIDER_COUNT, option-1);
                     if(selected != -1){
                         selections[selected] = -1;
-                        gotoxy(right+5, option+5);
-                        cout << " ";
+                        gotoxy(right+5, lineOption);
+                        printw(" ");
                         amountSelected--;
                     }
                     break;
                 }
+                    
+                case 99: {
+                    curs_set(1);
+                    endwin();
+                    return false;
+                }
             }
             clearSelection(lineOption-1, lineOption+1, left, right);
-
+            
         }
+        
+        curs_set(1);
+        endwin();
 
         cout << endl;
 

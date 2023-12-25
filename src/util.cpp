@@ -11,30 +11,30 @@ string fillSpaces(string line, int spaces){
     return line;
 }
 
-void printMenu(string menuOptions[], int optionCount){
-    for(int i = 0; i <= optionCount; i++){
-        cout << endl;
-        cout << "\t" << menuOptions[i];
-    }
+void gotoxy(int x, int y){
+    move(y, x);
 }
 
-void gotoxy(int x, int y){
-    cout << "\033[" << y << ";" << x << "H";
+void printMenu(string menuOptions[], int optionCount){
+    for(int i = 0; i <= optionCount; i++){
+        printw("\n");
+        printw("\t%s", menuOptions[i].c_str());
+    }
 }
 
 void updateMenu(int option, int left, int right){
     gotoxy(left, option);
-    cout << "->";
+    printw("->");
     gotoxy(right, option);
-    cout << "<-";
+    printw("<-");
 }
 
 void clearSelection(int start, int end, int left, int right){
     for(int i = start; i < end+1; i++){
         gotoxy(left, i);
-        cout << "  ";
+        printw("  ");
         gotoxy(right, i);
-        cout << "  ";
+        printw("  ");
     }
 }
 

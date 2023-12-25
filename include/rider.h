@@ -10,7 +10,7 @@ using namespace std;
 //space used by each category when printing
 #define SPACE_NUMBER 2
 #define SPACE_COUNTRY 20
-#define SPACE_TEAM 30
+#define SPACE_TEAM 40
 #define SPACE_POINTS 4
 #define SPACE_NAME 25
 //space used when printing riders sumarized

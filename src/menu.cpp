@@ -51,7 +51,6 @@ void Menu::startProgram() {
 
     //variables
     MemberNode* tempMemberNode(memberList->getFirstPos());
-    RiderNode* tempRookieNode;
     Member tempMember;
     Rider tempRookie;
     Rider rider;

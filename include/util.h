@@ -2,6 +2,7 @@
 #define MOTOGP_FANTASY_LEAGUE_UTIL_H
 
 #include <iostream>
+#include <ncurses.h>
 
 using namespace std;
 

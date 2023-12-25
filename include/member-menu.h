@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <conio.h>
+#include <ncurses.h>
 #include <string>
 
 

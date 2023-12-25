@@ -124,6 +124,10 @@ void SeasonMenu::changeSeason() {
         seasons[i++] = auxString;
         getline(file, auxString);
     }
+    
+    cout << seasons[0] << endl;
+    cout << seasons[1] << endl;
+    
     for(int j = 0; j < i; j++){
         cout << j+1 << " " << seasons[j] << endl;
     }
@@ -141,34 +145,38 @@ void SeasonMenu::changeSeason() {
     riderList->deleteAll();
     memberList->deleteAll();
 
+    cout << seasons[selection-1] << endl;
+    cout << seasons[selection-1] << endl;
+    
     riderList = riderList->readFromDisk(seasons[selection-1] + '-' + RIDER_DATA);
     memberList = memberList->readFromDisk(seasons[selection-1] + '-' + MEMBER_DATA);
     *seasonName = seasons[selection-1];
 
     MemberNode* tempMemberNode(memberList->getFirstPos());
     Member tempMember;
+    Rider tempRookie;
     Rider rider;
     string tempNumber;
 
+    //complete the rider lists and rookies of each member, because readFromDisk only assigns riders with only their numbers
     while(tempMemberNode != nullptr){
+        //retrieve rookie number and get full rookie data to assign
         tempMember = tempMemberNode->getData();
+        //node to go through member rider list
         RiderNode* tempRiderNode1(tempMember.getRiderList()->getFirstPos());
         while(tempRiderNode1 != nullptr){
-            RiderNode* tempRiderNode2(riderList->getFirstPos());
+            //get full data of each rider, same method as rookie
+            RiderNode* tempRiderNode2;
             tempNumber = tempRiderNode1->getData().getNumber();
             rider.setNumber(tempNumber);
-            while(tempRiderNode2 != nullptr){
-                if(tempRiderNode2->getData() == rider){
-                    rider = tempRiderNode2->getData();
-                    tempRiderNode1->setData(rider);
-                }
-                tempRiderNode2 = tempRiderNode2->getNext();
-            }
+            tempRiderNode2 = riderList->retrievePos(rider);
+            rider = tempRiderNode2->getData();
+            tempRiderNode1->setData(rider);
             tempRiderNode1 = tempRiderNode1->getNext();
         }
+        tempMemberNode->setData(tempMember);
         tempMemberNode = tempMemberNode->getNext();
     }
-
 }
 
 void SeasonMenu::changeDefaultSeason() {
