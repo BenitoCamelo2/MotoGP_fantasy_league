@@ -69,6 +69,24 @@ string Rider::toString() {
     return result;
 }
 
+string Rider::toStringIndexed(int index){
+    string result;
+    string name = firstName + " " + lastName;
+    
+    result = to_string(index);
+    result += " |";
+    result += fillSpaces(name, SPACE_NAME - name.length());
+    result += "|";
+    result += fillSpaces(to_string(points), SPACE_POINTS - to_string(points).length());
+    result += "|";
+    result += fillSpaces(country, SPACE_COUNTRY - country.length());
+    result += "|";
+    result += fillSpaces(team, SPACE_TEAM - team.length());
+    result += "|";
+    
+    return result;
+}
+
 //toStringSmall prints the rider but sumarized for listing
 string Rider::toStringSmall(bool spacing) {
     string result;

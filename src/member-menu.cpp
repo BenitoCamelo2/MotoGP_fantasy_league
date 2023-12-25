@@ -51,16 +51,28 @@ void MemberMenu::menu() {
         cin >> option;
         switch(option){
             case ADD_MEMBER: {
-                saveChanges = addMember();
+                if(!saveChanges){
+                    saveChanges = addMember();
+                } else {
+                    addMember();
+                }
                 updateMemberPoints();
                 break;
             }
             case DELETE_MEMBER: {
-                saveChanges = deleteMember();
+                if(!saveChanges){
+                    saveChanges = deleteMember();
+                } else {
+                    deleteMember();
+                }
                 break;
             }
             case MODIFY_MEMBER: {
-                modifyMember();
+                if(!saveChanges){
+                    saveChanges = modifyMember();
+                } else {
+                    modifyMember();
+                }
                 updateMemberPoints();
                 break;
             }
@@ -194,14 +206,21 @@ bool MemberMenu::addMember() {
         attron(COLOR_PAIR(2));
 
         int messageLine = 8+riderCount, messageStart = 10, acceptLine = riderCount+1;
+        bool riderSelectedBoth = false;
         
         while(!exit){
             lineOption = option+5;
 
             updateMenu(lineOption, left, right);
+            if(amountSelected == 5){
+                gotoxy(messageStart, messageLine);
+                printw("The next rider will be the independent rider");
+            }
             refresh();
             key = getch();
             //printw("%d", key); use if need to find keycode
+            
+            
 
             switch(key){
                 case KEY_DOWN: {
@@ -236,23 +255,20 @@ bool MemberMenu::addMember() {
                         break;
                     }
 
-                    if(amountSelected == 4){
-                        gotoxy(messageStart, messageLine);
-                        printw("The next rider will be the independent rider");
-                    }
-
                     if(amountSelected >= RIDER_COUNT){
                         gotoxy(messageStart, messageLine);
                         printw("You have selected the max amount of riders");
                         break;
                     }
-                    if(option != acceptLine && checkIfSelected(selections, RIDER_COUNT, option-1) == -1){
-                        int i = 0;
-                        for(i; i < RIDER_COUNT; i++){
-                            if(selections[i] == -1){
-                                break;
-                            }
+                    
+                    int i = 0;
+                    for(i; i < RIDER_COUNT; i++){
+                        if(selections[i] == -1){
+                            break;
                         }
+                    }
+                                        
+                    if(option != acceptLine && checkIfSelected(selections, RIDER_COUNT, option-1) == -1){
                         if(i >= RIDER_COUNT){
                             i = 5;
                         }
@@ -264,7 +280,12 @@ bool MemberMenu::addMember() {
                             printw("%d", i+1);
                         }
                         amountSelected++;
-                        break;
+                    } else if(option != acceptLine && i == 5){
+                        riderSelectedBoth = true;
+                        selections[i] = option-1;
+                        gotoxy(right+7, lineOption);
+                        printw("i");
+                        amountSelected++;
                     }
 
                     break;
@@ -278,8 +299,14 @@ bool MemberMenu::addMember() {
 
                     selected = checkIfSelected(selections, RIDER_COUNT, option-1);
                     if(selected != -1){
-                        selections[selected] = -1;
-                        gotoxy(right+5, lineOption);
+                        if(riderSelectedBoth){
+                            gotoxy(right+7, lineOption);
+                            selections[5] = -1;
+                            riderSelectedBoth = false;
+                        } else {
+                            selections[selected] = -1;
+                            gotoxy(right+5, lineOption);
+                        }
                         printw(" ");
                         amountSelected--;
                     }
@@ -350,7 +377,7 @@ bool MemberMenu::deleteMember() {
     return true;
 }
 
-void MemberMenu::modifyMember() {
+bool MemberMenu::modifyMember() {
     system(CLEAR);
     bool exit = false;
     int option;
@@ -360,8 +387,7 @@ void MemberMenu::modifyMember() {
         cout << "Modify Member" << endl;
         cout << "1. Change Username" << endl;
         cout << "2. Change Rider" << endl;
-        cout << "3. Save Changes" << endl;
-        cout << "4. Exit" << endl;
+        cout << "3. Exit" << endl;
         cout << "Option: ";
         cin >> option;
         switch(option){
@@ -376,7 +402,7 @@ void MemberMenu::modifyMember() {
                 cout << memberList->toString() << endl;
                 cout << "Input the username of the member you would like to modify" << endl;
                 cout << "-> ";
-                cin.ignore();getline(cin, userName);
+                getline(cin, userName);
                 tempNode = memberList->retrievePos(tempMember);
 
                 while(!endModify && tempNode == nullptr){
@@ -392,7 +418,7 @@ void MemberMenu::modifyMember() {
                 }
 
                 if(endModify){
-                    return;
+                    return false;
                 }
 
                 cout << "Input the new username" << endl;
@@ -410,7 +436,7 @@ void MemberMenu::modifyMember() {
                 Member tempMember;
                 MemberNode* tempMemberNode = new MemberNode();
 
-                string riderNumber;
+                int riderIndex;
                 Rider tempRider;
                 RiderNode* tempRiderNode1 = new RiderNode();
                 RiderNode* tempRiderNode2 = new RiderNode();
@@ -438,60 +464,67 @@ void MemberMenu::modifyMember() {
                 }
 
                 if(endModify){
-                    return;
+                    return false;
                 }
 
                 tempMember = tempMemberNode->getData();
 
                 system(CLEAR);
                 cout << "Modify Member Rider" << endl;
-                cout << tempMember.getRiderList()->toString() << endl;
-                cout << "Input rider number (0 to cancel)" << endl;
+                cout << tempMember.getRiderList()->toStringIndexed() << endl;
+                cout << "Input rider index (0 to cancel)" << endl;
                 cout << "-> ";
-                getline(cin, riderNumber);
-                tempRider.setNumber(riderNumber);
-                tempRiderNode1 = tempMember.getRiderList()->retrievePos(tempRider);
+                cin >> riderIndex;
+                riderIndex--;
+                if(riderIndex == -1){
+                    return false;
+                }
+                tempRiderNode1 = tempMember.getRiderList()->retrievePosIndex(riderIndex);
+                cout << tempRiderNode1->getData().toString() << endl;
                 if(tempRiderNode1 == nullptr){
                     endModify = false;
                     while(tempRiderNode1 == nullptr && !endModify){
                         cout << "Rider not found, input number again (0 to cancel)" << endl;
                         cout << "-> ";
-                        getline(cin, riderNumber);
-                        if(riderNumber == "0"){
+                        cin >> riderIndex;
+                        riderIndex--;
+                        if(riderIndex == -1){
                             endModify = true;
                         } else {
-                            tempRider.setNumber(riderNumber);
-                            tempRiderNode1 = tempMember.getRiderList()->retrievePos(tempRider);
+                            tempRiderNode1 = tempMember.getRiderList()->retrievePosIndex(riderIndex);
                         }
                     }
                     if(endModify){
-                        return;
+                        return false;
                     }
                 }
 
                 system(CLEAR);
                 cout << "Modify Member Rider" << endl;
-                cout << riderList->toString() << endl;
-                cout << "Input new rider number (0 to cancel): " << endl;
+                cout << riderList->toStringIndexed() << endl;
+                cout << "Input new rider index (0 to cancel): " << endl;
                 cout << "-> ";
-                getline(cin, riderNumber);
-                tempRider.setNumber(riderNumber);
-                tempRiderNode2 = riderList->retrievePos(tempRider);
+                cin >> riderIndex;
+                riderIndex--;
+                if(riderIndex == -1){
+                    return false;
+                }
+                tempRiderNode2 = riderList->retrievePosIndex(riderIndex);
                 if(tempRiderNode2 == nullptr){
                     endModify = false;
                     while(tempRiderNode2 == nullptr && !endModify){
                         cout << "Rider not found, input number again (0 to cancel)" << endl;
                         cout << "-> ";
-                        getline(cin, riderNumber);
-                        if(riderNumber == "0"){
+                        cin >> riderIndex;
+                        riderIndex--;
+                        if(riderIndex == -1){
                             endModify = true;
                         } else {
-                            tempRider.setNumber(riderNumber);
-                            tempRiderNode2 = riderList->retrievePos(tempRider);
+                            tempRiderNode2 = riderList->retrievePosIndex(riderIndex);
                         }
                     }
                     if(endModify){
-                        return;
+                        return false;
                     }
                 }
 
@@ -501,19 +534,7 @@ void MemberMenu::modifyMember() {
                 changes = true;
                 break;
             }
-            case SAVE_CHANGES_MODIFY: {
-                memberList->writeToDisk(seasonName + '-' + MEMBER_DATA);
-                break;
-            }
             case EXIT_MODIFY: {
-                if(changes){
-                    char opt;
-                    cout << "Would you like to save the changes made? (S/N): ";
-                    cin >> opt;
-                    if(opt == 's' || opt == 'S'){
-                        memberList->writeToDisk(seasonName + '-' + MEMBER_DATA);
-                    }
-                }
                 exit = true;
                 break;
             }
@@ -525,7 +546,8 @@ void MemberMenu::modifyMember() {
             }
         }
     }while(!exit);
-
+    system(CLEAR);
+    return changes;
 }
 
 void MemberMenu::enterToContinue() {

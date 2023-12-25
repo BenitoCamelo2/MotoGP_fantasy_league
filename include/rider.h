@@ -41,6 +41,7 @@ public:
     int getPoints();
 
     string toString();
+    string toStringIndexed(int index);
     string toStringSmall(bool spacing);
     string toStringDisk();
 

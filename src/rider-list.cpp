@@ -208,6 +208,25 @@ string RiderList::toString() {
     return result;
 }
 
+string RiderList::toStringIndexed(){
+    RiderNode* temp = header;
+    string result;
+    int i = 1;
+
+    if(isEmpty()){
+        return "No riders in list";
+    }
+
+    while(temp != nullptr){
+        result += temp->getData().toStringIndexed(i);
+        result += "\n";
+        temp = temp->getNext();
+        i++;
+    }
+
+    return result;
+}
+
 /*
 string* RiderList::toStringArray() {
     string *result[] = {};

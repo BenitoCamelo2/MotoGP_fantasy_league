@@ -25,7 +25,7 @@ class MemberMenu {
         void menu();
         bool addMember();
         bool deleteMember();
-        void modifyMember();
+        bool modifyMember();
         void createStandingsFile();
 
         static void enterToContinue();
@@ -45,7 +45,6 @@ enum{
 enum{
     CHANGE_USERNAME = 1,
     CHANGE_RIDER,
-    SAVE_CHANGES_MODIFY,
     EXIT_MODIFY
 };
 

@@ -27,6 +27,7 @@ public:
     Rider retrieveData(RiderNode* riderNode);
     //string* toStringArray();
     string toString();
+    string toStringIndexed();
     void deleteAll();
     void writeToDisk(const string& fileName);
     RiderList* readFromDisk(const string& fileName);
