@@ -162,7 +162,7 @@ MemberNode *MemberList::tieBreaker(MemberNode *first, MemberNode *second, RiderN
     firstPicks = first->getDataPointer()->getRiderList()->getFirstPos();
     secondPicks = second->getDataPointer()->getRiderList()->getFirstPos();
     //iterate until points are not the same
-    while(firstPicks->getData().getPoints() == secondPicks->getData().getPoints()){
+    while((firstPicks->getData().getPoints() == secondPicks->getData().getPoints()) && (firstPicks->getNext() != nullptr && firstPicks->getNext() != nullptr)){
         firstPicks = firstPicks->getNext();
         secondPicks = secondPicks->getNext();
     }
