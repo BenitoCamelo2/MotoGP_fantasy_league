@@ -11,10 +11,12 @@ using namespace std;
 
 class MemberList {
     MemberNode* header;
+    string* errorMessage;
     bool isValidPos(MemberNode* memberNode);
 public:
 
     MemberList();
+    MemberList(MemberNode* header, string* errorMessage);
     ~MemberList();
 
     bool isEmpty();

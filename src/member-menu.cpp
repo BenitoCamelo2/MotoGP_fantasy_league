@@ -3,12 +3,13 @@
 #include "util.h"
 
 MemberMenu::MemberMenu(MemberList *memberList, RiderList *riderList, string &seasonName) {
-    this->memberList = memberList;
+    errorMessage = "";
+    this->memberList = new MemberList(memberList->getFirstPos(), &errorMessage);
     this->riderList = riderList;
     this->seasonName = seasonName;
     saveChanges = false;
     updateMemberPoints();
-    memberList->sortMembers(riderList->getFirstPos());
+    this->memberList->sortMembers(riderList->getFirstPos());
     menu();
 }
 
@@ -39,6 +40,11 @@ void MemberMenu::menu() {
     do{
         system(CLEAR);
         cout << "Member Menu, " << seasonName << endl;
+
+        if(!errorMessage.empty()){
+            cout << errorMessage << endl;
+        }
+
         cout << "1. Add Member" << endl;
         cout << "2. Delete Member" << endl;
         cout << "3. Modify Member" << endl;
@@ -48,6 +54,7 @@ void MemberMenu::menu() {
         cout << "7. Save Changes" << endl;
         cout << "8. Exit" << endl;
         cout << "Option: ";
+        errorMessage = "";
         cin >> option;
         switch(option){
             case ADD_MEMBER: {
@@ -74,6 +81,7 @@ void MemberMenu::menu() {
                     modifyMember();
                 }
                 updateMemberPoints();
+                this->memberList->sortMembers(riderList->getFirstPos());
                 break;
             }
             case LIST_MEMBERS: {
@@ -95,6 +103,8 @@ void MemberMenu::menu() {
                 break;
             }
             case CREATE_STANDINGS_FILE: {
+                this->memberList->sortMembers(riderList->getFirstPos());
+
                 system(CLEAR);
 
                 ofstream fileTXT(seasonName + '-' + CURRENT_STANDINGS, ios::out);

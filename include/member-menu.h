@@ -16,6 +16,7 @@ class MemberMenu {
         MemberList* memberList;
         RiderList* riderList;
         string seasonName;
+        string errorMessage;
         bool saveChanges;
     public:
         MemberMenu(MemberList *memberList, RiderList *riderList, string &seasonName);
@@ -26,7 +27,6 @@ class MemberMenu {
         bool addMember();
         bool deleteMember();
         bool modifyMember();
-        void createStandingsFile();
 
         static void enterToContinue();
 };
