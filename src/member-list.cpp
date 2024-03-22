@@ -193,7 +193,7 @@ MemberNode *MemberList::tieBreaker(MemberNode *firstMember, MemberNode *secondMe
         firstMember->setPrevious(nullptr);
         return firstMember;
     } else {
-        firstMember->setNext(merge(firstMember, secondMember->getNext(), riderHead));
+        secondMember->setNext(merge(firstMember, secondMember->getNext(), riderHead));
         secondMember->getNext()->setPrevious(secondMember);
         secondMember->setPrevious(nullptr);
         return secondMember;
