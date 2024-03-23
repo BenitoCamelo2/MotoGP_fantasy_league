@@ -12,6 +12,10 @@ RiderNode::RiderNode(const Rider &rider) {
     previous = nullptr;
 }
 
+Rider* RiderNode::getDataReference() {
+    return &data;
+}
+
 Rider RiderNode::getData() {
     return data;
 }

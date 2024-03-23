@@ -19,6 +19,7 @@ public:
     void insertData(RiderNode* riderNode, const Rider &data);
     void insertOrdered(Rider& data);
     void deleteData(RiderNode* riderNode);
+    void generatePositions();
     RiderNode* getFirstPos();
     RiderNode* getLastPos();
     RiderNode* getNextPos(RiderNode *riderNode);

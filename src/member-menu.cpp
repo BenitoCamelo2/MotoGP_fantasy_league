@@ -42,7 +42,7 @@ void MemberMenu::menu() {
         cout << "Member Menu, " << seasonName << endl;
 
         if(!errorMessage.empty()){
-            cout << errorMessage << endl;
+            cout << errorMessage;
         }
 
         cout << "1. Add Member" << endl;
@@ -188,6 +188,8 @@ bool MemberMenu::addMember() {
                 longestStringLength = tempRiderNode->getData().toString().length();
             }
         }
+
+        //riderStringArray = riderList->toStringArray(); <- TODO: GET THIS WORKING!!!
 
         left = 10; //position of left arrows, 10 because of tab
         right = longestStringLength + 19;

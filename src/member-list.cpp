@@ -151,13 +151,20 @@ MemberNode *MemberList::tieBreaker(MemberNode *firstMember, MemberNode *secondMe
     RiderNode* secondPicks = secondMember->getDataPointer()->getRiderList()->getFirstPos();
     RiderNode* tempRider = riderHead;
     bool samePicks = true;
+    int i = 1;
 
     //if one of the members have one of the top 5 riders correctly guessed, the one that chose correctly will be ahead
     //the if's are structured so that if they both have the same rider in the same position, then it keeps checking
     while(firstPicks != nullptr && secondPicks != nullptr){
         if(firstPicks == tempRider && secondPicks != tempRider){
+            firstMember->setNext(merge(firstMember->getNext(), secondMember, riderHead));
+            firstMember->getNext()->setPrevious(firstMember);
+            firstMember->setPrevious(nullptr);
             return firstMember;
         } else if(firstPicks != tempRider && secondPicks == tempRider){
+            secondMember->setNext(merge(firstMember, secondMember->getNext(), riderHead));
+            secondMember->getNext()->setPrevious(secondMember);
+            secondMember->setPrevious(nullptr);
             return secondMember;
         }
 
@@ -168,11 +175,35 @@ MemberNode *MemberList::tieBreaker(MemberNode *firstMember, MemberNode *secondMe
 
     firstPicks = firstMember->getDataPointer()->getRiderList()->getFirstPos();
     secondPicks = secondMember->getDataPointer()->getRiderList()->getFirstPos();
+    //check to see if one of the members has a rider in the correct position
+    //only goes to getNext to not lcheck the independant rider, as they would be read as 6th position instead of idnependant
+    while(secondPicks->getNext() != nullptr && firstPicks->getNext() != nullptr){
+        if(secondPicks->getData().getPosition() != firstPicks->getData().getPosition()){
+            if(secondPicks->getData().getPosition() == i){
+                secondMember->setNext(merge(firstMember, secondMember->getNext(), riderHead));
+                secondMember->getNext()->setPrevious(secondMember);
+                secondMember->setPrevious(nullptr);
+                return secondMember;
+            } else if(firstPicks->getData().getPosition() == i){
+                firstMember->setNext(merge(firstMember->getNext(), secondMember, riderHead));
+                firstMember->getNext()->setPrevious(firstMember);
+                firstMember->setPrevious(nullptr);
+                return firstMember;
+            }
+        }
+
+        i++;
+        firstPicks = firstPicks->getNext();
+        secondPicks = secondPicks->getNext();
+    }
+
+    firstPicks = firstMember->getDataPointer()->getRiderList()->getFirstPos();
+    secondPicks = secondMember->getDataPointer()->getRiderList()->getFirstPos();
     //iterate until points are not the same
     while((firstPicks->getData().getPoints() == secondPicks->getData().getPoints()) && (firstPicks->getNext() != nullptr && firstPicks->getNext() != nullptr)){
         firstPicks = firstPicks->getNext();
         secondPicks = secondPicks->getNext();
-        if(secondPicks->getData() != firstPicks->getData()){
+        if(secondPicks->getData().getNumber() != firstPicks->getData().getNumber()){
             samePicks = false;
         }
     }
@@ -182,8 +213,7 @@ MemberNode *MemberList::tieBreaker(MemberNode *firstMember, MemberNode *secondMe
     }
 
     if(samePicks && errorMessage){
-        *errorMessage = firstMember->getData().getUserName() + " and " + secondMember->getData().getUserName() + " have the same rider picks!";
-        cout << *errorMessage << endl;
+        *errorMessage += firstMember->getData().getUserName() + " and " + secondMember->getData().getUserName() + " have the same rider picks!\n";
     }
 
     //conditionals to find which player has a rider with more points

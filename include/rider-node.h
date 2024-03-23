@@ -14,6 +14,7 @@ public:
     RiderNode(const Rider &rider);
 
     Rider getData();
+    Rider* getDataReference();
     RiderNode* getNext();
     RiderNode* getPrevious();
     void setData(const Rider &data);

@@ -7,6 +7,7 @@ Rider::Rider() {
     country = "";
     team = "";
     points = 0;
+    position = 0;
 }
 
 bool Rider::setData(string &firstName, string &lastName, string &number, string &country, string &team, int &points) {
@@ -25,6 +26,10 @@ void Rider::setNumber(string &number) {
 
 void Rider::setPoints(int &points) {
     this->points = points;
+}
+
+void Rider::setPosition(int &position){
+    this->position = position;
 }
 
 string Rider::getFirstName() {
@@ -51,11 +56,17 @@ int Rider::getPoints() {
     return points;
 }
 
+int Rider::getPosition() {
+    return position;
+}
+
 //toString is used to print the rider to the screen
 string Rider::toString() {
     string result;
     string name = firstName + " " + lastName;
 
+    result += fillSpaces(to_string(position), SPACE_POSITION - to_string(position).length());
+    result += "|";
     result += fillSpaces(number, SPACE_NUMBER - number.length());
     result += "|";
     result += fillSpaces(name, SPACE_NAME - name.length());
@@ -72,7 +83,7 @@ string Rider::toString() {
 string Rider::toStringIndexed(int index){
     string result;
     string name = firstName + " " + lastName;
-    
+
     result = to_string(index);
     result += " |";
     result += fillSpaces(name, SPACE_NAME - name.length());
@@ -131,30 +142,31 @@ Rider &Rider::operator=(const Rider &rider) {
     country = rider.country;
     team = rider.team;
     points = rider.points;
+    position = rider.position;
 
     return *this;
 }
 
 bool Rider::operator==(const Rider &rider) {
-    return stoi(number) == stoi(rider.number);
+    return points == rider.points;
 }
 
 bool Rider::operator!=(const Rider &rider) {
-    return stoi(number) != stoi(rider.number);
+    return points != rider.points;
 }
 
 bool Rider::operator<(const Rider &rider) {
-    return stoi(number) < stoi(rider.number);
+    return points < rider.points;
 }
 
 bool Rider::operator<=(const Rider &rider) {
-    return stoi(number) <= stoi(rider.number);
+    return points <= rider.points;
 }
 
 bool Rider::operator>(const Rider &rider) {
-    return stoi(number) > stoi(rider.number);
+    return points > rider.points;
 }
 
 bool Rider::operator>=(const Rider &rider) {
-    return stoi(number) >= stoi(rider.number);
+    return points >= rider.points;
 }
