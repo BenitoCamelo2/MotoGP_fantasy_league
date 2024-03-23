@@ -169,7 +169,7 @@ RiderNode *RiderList::retrievePos(Rider &rider) {
         }
     } else {
         while(temp != nullptr){
-            if(temp->getData() == rider){
+            if(temp->getData().getNumber() == rider.getNumber()){
                 return temp;
             }
             temp = temp->getNext();
