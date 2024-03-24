@@ -233,7 +233,7 @@ void RiderMenu::updateMembersRiders() {
             tempRider = tempRiderNode1->getData();
             tempRiderNode2 = riderList->getFirstPos();
             while(tempRiderNode2 != nullptr){
-                if(tempRiderNode2->getData() == tempRider){
+                if(tempRiderNode2->getData().getNumber() == tempRider.getNumber()){
                     tempRider = tempRiderNode2->getData();
                     break;
                 }

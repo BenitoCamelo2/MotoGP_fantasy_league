@@ -51,8 +51,9 @@ void RiderList::insertData(RiderNode *riderNode, const Rider &data) {
     if(header == nullptr){
         header = toInsert;
     }else if(riderNode == nullptr) {
-        header->setNext(toInsert);
-        toInsert->setPrevious(header);
+        toInsert->setNext(header);
+        header->setPrevious(toInsert);
+        header = toInsert;
     }else if(riderNode->getNext() == nullptr) {
         riderNode->setNext(toInsert);
         toInsert->setPrevious(riderNode);
